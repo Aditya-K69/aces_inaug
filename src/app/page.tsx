@@ -5,16 +5,15 @@ export default function Home() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch("/api/trigger");
+        const res = await fetch("/api/flag");
         const data = await res.json();
-
-        if (data.flag) {
+        if (data.shouldRedirect) {
           window.location.href = "https://acespvgcoet.in/";
         }
       } catch (err) {
-        console.error("Polling error:", err);
+        console.error(err);
       }
-    }, 500); 
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);

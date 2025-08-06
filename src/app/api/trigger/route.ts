@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
+import { setRedirectTrue } from "@/lib/flag";
 
-export function GET() {
-  return NextResponse.json({message:"Redirecting to website",flag:true},{status:301});
+export async function GET() {
+  setRedirectTrue();
+  return new Response("Redirect triggered", { status: 200 });
 }
-
-
