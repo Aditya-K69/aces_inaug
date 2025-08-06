@@ -5,10 +5,10 @@ export default function Home() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch("/api/flag");
+        const res = await fetch("/api/trigger");
         const data = await res.json();
 
-        if (data.shouldRedirect) {
+        if (data.flag) {
           window.location.href = "https://acespvgcoet.in/";
         }
       } catch (err) {

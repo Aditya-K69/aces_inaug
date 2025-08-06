@@ -1,8 +1,7 @@
-let redirectFlag = false; 
+import { NextResponse } from "next/server";
 
 export function GET() {
-  redirectFlag = true;
-  return new Response("Redirect triggered", { status: 200 });
+  return NextResponse.json({message:"Redirecting to website",flag:true},{status:301});
 }
 
-export { redirectFlag };
+
