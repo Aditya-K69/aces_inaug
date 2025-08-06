@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true });
   }
 
-  if (body.module === "POLL") {
+  if (body.module === "PC") {
     try {
       const data = await fs.readFile(filePath, "utf-8");
       const { trigger } = JSON.parse(data);
