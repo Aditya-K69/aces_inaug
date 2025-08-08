@@ -13,7 +13,7 @@ export default function Home() {
       const data = await res.json();
       console.log(data)
       if (data.trigger === true) {
-        window.location.href = "https://acespvgcoet.in";
+        window.location.href = "https://aces-website-2025-26.vercel.app/";
       }
     }, 500);
 
