@@ -245,14 +245,12 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ children, delay = 0 }) => {
 };
 
 export default function Home(): React.JSX.Element {
-  const [timer, setTimer] = useState<number>(10);
   const [started, setStarted] = useState<boolean>(false);
   const [isLaunched, setIsLaunched] = useState<boolean>(false);
   const [showTerminal, setShowTerminal] = useState<boolean>(true);
   const [showLogo, setShowLogo] = useState<boolean>(false);
   const [compilationStep, setCompilationStep] = useState<number>(0);
   const [showMatrix, setShowMatrix] = useState<boolean>(false);
-  const [showRedirect, setShowRedirect] = useState<boolean>(false);
   
   const matrixCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -331,7 +329,7 @@ export default function Home(): React.JSX.Element {
 
   }, [showLogo]);
 
-  // Poll API until trigger is received
+  // Poll API until trigger is received - IMMEDIATELY START COMPILATION WHEN RECEIVED
   useEffect(() => {
     if (started) return;
     
@@ -347,6 +345,7 @@ export default function Home(): React.JSX.Element {
         if (data.trigger === true) {
           setStarted(true);
           clearInterval(interval);
+          // IMMEDIATELY start compilation - no countdown, no manual button click
           startCompilation();
         }
       } catch (error) {
@@ -356,22 +355,6 @@ export default function Home(): React.JSX.Element {
     
     return () => clearInterval(interval);
   }, [started]);
-
-  // Countdown logic
-  useEffect(() => {
-    if (!started || !showRedirect) return;
-    
-    const countdown = setInterval(() => {
-      setTimer((prev) => {
-        if (prev > 1) return prev - 1;
-        clearInterval(countdown);
-        window.location.href = "https://aces-website-2025-26.vercel.app/";
-        return 0;
-      });
-    }, 1000);
-    
-    return () => clearInterval(countdown);
-  }, [started, showRedirect]);
 
   const startCompilation = async (): Promise<void> => {
     if (isLaunched) return;
@@ -395,6 +378,7 @@ export default function Home(): React.JSX.Element {
       "ACES system online."
     ];
 
+    // Execute all compilation steps
     for (let i = 0; i < compilationSteps.length; i++) {
       await new Promise<void>(resolve => {
         setTimeout(() => {
@@ -414,15 +398,15 @@ export default function Home(): React.JSX.Element {
       setShowMatrix(true);
       setShowTerminal(false);
       
-      // Show logo after matrix
+      // Show logo and celebration after matrix
       setTimeout(() => {
         setShowMatrix(false);
         setShowLogo(true);
         
-        // Show redirect notice
+        // Redirect to ACES website after celebration (5 seconds total)
         setTimeout(() => {
-          setShowRedirect(true);
-        }, 3000);
+          window.location.href = "https://aces-website-2025-26.vercel.app/";
+        }, 5000);
       }, 3500);
     }, 1000);
   };
@@ -541,27 +525,6 @@ export default function Home(): React.JSX.Element {
           animation: blink 1s infinite;
         }
 
-        .launch-button {
-          background: linear-gradient(45deg, #1a1a1a, #333);
-          border: 2px solid #00ff00;
-          color: #00ff00;
-          padding: 15px 30px;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 16px;
-          cursor: pointer;
-          border-radius: 4px;
-          transition: all 0.3s ease;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
-        }
-
-        .launch-button:hover {
-          background: rgba(0, 255, 0, 0.1);
-          box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-          transform: translateY(-1px);
-        }
-
         .progress-bar {
           width: 100%;
           height: 4px;
@@ -642,7 +605,7 @@ export default function Home(): React.JSX.Element {
               <div className="terminal-title">Terminal - ACES Development Environment</div>
             </div>
             <div className="h-full overflow-y-auto relative">
-              {/* Initial state */}
+              {/* Initial state - shows waiting message or auto-starts compilation */}
               {!isLaunched && (
                 <>
                   <div className="terminal-line">
@@ -650,16 +613,9 @@ export default function Home(): React.JSX.Element {
                     <span className="cursor"></span>
                   </div>
                   <div className="text-center mt-12">
-                    {!started ? (
-                      <div className="text-2xl text-white">Waiting for trigger...</div>
-                    ) : (
-                      <button 
-                        className="launch-button"
-                        onClick={startCompilation}
-                      >
-                        Initialize Compilation
-                      </button>
-                    )}
+                    <div className="text-2xl text-white">
+                      {!started ? "Waiting for trigger..." : "Initializing compilation..."}
+                    </div>
                   </div>
                 </>
               )}
@@ -705,13 +661,9 @@ export default function Home(): React.JSX.Element {
             <AnimatedText delay={500}>
               LAUNCH SUCCESSFUL
             </AnimatedText>
-          </div>
-        )}
-
-        {/* Redirect Notice */}
-        {showRedirect && (
-          <div className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 text-sm text-gray-500 z-25 transition-opacity duration-500 ${showRedirect ? 'opacity-100' : 'opacity-0'}`}>
-            Redirecting to main system in <span>{timer}</span> seconds...
+            <div className="mt-8 text-lg text-purple-300">
+              Redirecting to main system...
+            </div>
           </div>
         )}
 
