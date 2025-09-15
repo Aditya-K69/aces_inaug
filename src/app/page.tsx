@@ -251,6 +251,7 @@ export default function Home(): React.JSX.Element {
   const [showLogo, setShowLogo] = useState<boolean>(false);
   const [compilationStep, setCompilationStep] = useState<number>(0);
   const [showMatrix, setShowMatrix] = useState<boolean>(false);
+  const [isBlurred, setIsBlurred] = useState<boolean>(true); // New state for blur effect
   
   const matrixCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -344,6 +345,7 @@ export default function Home(): React.JSX.Element {
         console.log(data);
         if (data.trigger === true) {
           setStarted(true);
+          setIsBlurred(false); // Remove blur when trigger is received
           clearInterval(interval);
           // IMMEDIATELY start compilation - no countdown, no manual button click
           startCompilation();
@@ -442,6 +444,40 @@ export default function Home(): React.JSX.Element {
           overflow: hidden;
           height: 100vh;
           transition: background-color 1s ease;
+        }
+
+        .blur-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          backdrop-filter: blur(20px);
+          background: rgba(0, 0, 0, 0.3);
+          z-index: 1000;
+          transition: opacity 1.5s ease-out, backdrop-filter 1.5s ease-out;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .blur-overlay.inactive {
+          opacity: 0;
+          backdrop-filter: blur(0px);
+          pointer-events: none;
+        }
+
+        .waiting-message {
+          color: #00ff00;
+          font-size: 1.5rem;
+          text-align: center;
+          text-shadow: 0 0 20px #00ff00;
+          animation: pulse-text 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-text {
+          0%, 100% { opacity: 0.7; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.05); }
         }
 
         .celebrate-bg {
@@ -589,6 +625,13 @@ export default function Home(): React.JSX.Element {
         }
       `}</style>
 
+      {/* Blur Overlay */}
+      <div className={`blur-overlay ${!isBlurred ? 'inactive' : ''}`}>
+        <div className="waiting-message">
+          Awaiting system initialization...
+        </div>
+      </div>
+
       <div className="flex items-center justify-center min-h-screen relative">
         {/* Canvas elements */}
         <canvas ref={matrixCanvasRef} className={`matrix-canvas ${showMatrix ? 'active' : ''}`} style={{ zIndex: 5 }} />
@@ -614,7 +657,7 @@ export default function Home(): React.JSX.Element {
                   </div>
                   <div className="text-center mt-12">
                     <div className="text-2xl text-white">
-                      {!started ? "Waiting for trigger..." : "Initializing compilation..."}
+                      {!started ? "" : "Initializing compilation..."}
                     </div>
                   </div>
                 </>
@@ -652,7 +695,7 @@ export default function Home(): React.JSX.Element {
         {/* Logo and Celebration */}
         {showLogo && (
           <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-15 transition-all duration-1000 ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-80'}`}>
-            <div className="aces-logo w-56 h-56 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-4xl font-bold text-white mb-5 mx-auto">
+            <div className="aces-logo w-56 h-56 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-4xl font-bold text-white mb-5 mx-auto text-center">
               ACES
             </div>
             <AnimatedText delay={0}>
