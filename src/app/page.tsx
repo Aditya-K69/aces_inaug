@@ -407,7 +407,7 @@ export default function Home(): React.JSX.Element {
         
         // Redirect to ACES website after celebration (5 seconds total)
         setTimeout(() => {
-          window.location.href = "https://aces-website-2025-26.vercel.app/";
+          window.location.href = "https://www.acespvgcoet.in/";
         }, 5000);
       }, 3500);
     }, 1000);
