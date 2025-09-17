@@ -695,7 +695,13 @@ export default function Home(): React.JSX.Element {
         {/* Logo and Celebration */}
         {showLogo && (
           <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-15 transition-all duration-1000 ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-80'}`}>
-           <Image src={"/ACES_Logo_White.png"} alt="aces-logo" className="mx-auto block"/>
+           <div className="flex justify-center">
+          <Image 
+            src="/ACES_Logo_White.png" 
+            alt="aces-logo" 
+            className="h-auto w-auto"
+          />
+          </div>
             <AnimatedText delay={0}>
               Welcome to the Inauguration of ACES 2025-26
             </AnimatedText>
