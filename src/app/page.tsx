@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+
 
 interface ApiResponse {
   trigger: boolean;
@@ -255,7 +257,6 @@ export default function Home(): React.JSX.Element {
   
   const matrixCanvasRef = useRef<HTMLCanvasElement>(null);
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null);
-  const fireworksCanvasRef = useRef<HTMLCanvasElement>(null);
   const soundSystemRef = useRef<SoundSystem | null>(null);
 
   // Initialize sound system
@@ -325,8 +326,7 @@ export default function Home(): React.JSX.Element {
     }, 500);
 
     // Additional bursts
-    setTimeout(() => confetti.explode(), 2000);
-    setTimeout(() => confetti.explode(), 3500);
+ 
 
   }, [showLogo]);
 
@@ -636,7 +636,7 @@ export default function Home(): React.JSX.Element {
         {/* Canvas elements */}
         <canvas ref={matrixCanvasRef} className={`matrix-canvas ${showMatrix ? 'active' : ''}`} style={{ zIndex: 5 }} />
         <canvas ref={confettiCanvasRef} style={{ zIndex: 20 }} />
-        <canvas ref={fireworksCanvasRef} style={{ zIndex: 20 }} />
+        {/* <canvas ref={fireworksCanvasRef} style={{ zIndex: 20 }} /> */}
 
         {/* Terminal Interface */}
         {showTerminal && (
@@ -695,9 +695,7 @@ export default function Home(): React.JSX.Element {
         {/* Logo and Celebration */}
         {showLogo && (
           <div className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-15 transition-all duration-1000 ${showLogo ? 'opacity-100 scale-100' : 'opacity-0 scale-80'}`}>
-            <div className="aces-logo w-56 h-56 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-4xl font-bold text-white mb-5 mx-auto text-center">
-              ACES
-            </div>
+           <Image src={"/ACES_Logo_White.png"} alt="aces-logo"/>
             <AnimatedText delay={0}>
               Welcome to the Inauguration of ACES 2025-26
             </AnimatedText>
